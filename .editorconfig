@@ -1,0 +1,12 @@
+root = true
+
+[*]
+charset = utf-8
+
+[*.{ts,js}]
+indent_stye = space
+indent_size = 2
+switch_case_indent_size = 2
+end_of_line = lf
+trim_trailing_whitespace = true
+insert_final_newline = true

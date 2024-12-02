@@ -1,0 +1,8 @@
+{
+    "root": [
+        "./src/index.ts",
+        "./src/some-module/some.class.spec.ts",
+        "./src/some-module/some.class.ts"
+    ],
+    "version": "5.6.3"
+}

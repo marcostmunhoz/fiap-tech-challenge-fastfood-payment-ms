@@ -1,0 +1,6 @@
+echo "> Running pre-commit..."
+
+yarn format
+yarn lint
+yarn test
+git add .
