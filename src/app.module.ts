@@ -5,7 +5,8 @@ import {
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { HealthModule } from './health/health.module';
-import * as migrations from './module/infrastructure/migrations';
+import * as migrations from './payment/infrastructure/migrations';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import * as migrations from './module/infrastructure/migrations';
     }),
     TypeOrmModule.forFeature([]),
     HealthModule,
+    PaymentModule,
   ],
   controllers: [],
   providers: [],

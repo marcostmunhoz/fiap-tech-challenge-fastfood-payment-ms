@@ -22,7 +22,7 @@
     "prepack": "husky"
   },
   "dependencies": {
-    "@marcostmunhoz/fastfood-libs": "^0.0.15",
+    "@marcostmunhoz/fastfood-libs": "^0.0.16",
     "@nestjs/axios": "^3.1.2",
     "@nestjs/common": "^10.4.8",
     "@nestjs/config": "^3.3.0",
