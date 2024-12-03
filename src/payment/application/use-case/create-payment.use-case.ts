@@ -139,7 +139,7 @@ export class CreatePaymentUseCase implements UseCase<Input, Output> {
       };
     } catch (error) {
       payment.markAsFailed();
-      this.orderService.setAsCanceled(order.id);
+      await this.orderService.setAsCanceled(order.id);
 
       throw error;
     }
@@ -162,7 +162,7 @@ export class CreatePaymentUseCase implements UseCase<Input, Output> {
       });
 
       payment.setExternalPaymentId(id).markAsPaid();
-      this.orderService.setAsPaid(order.id);
+      await this.orderService.setAsPaid(order.id);
 
       return {
         id: payment.id,
@@ -170,7 +170,7 @@ export class CreatePaymentUseCase implements UseCase<Input, Output> {
       };
     } catch (error) {
       payment.markAsFailed();
-      this.orderService.setAsCanceled(order.id);
+      await this.orderService.setAsCanceled(order.id);
 
       throw error;
     }

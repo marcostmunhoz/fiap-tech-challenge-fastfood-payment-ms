@@ -59,11 +59,21 @@ export class TypeOrmPaymentRepository implements PaymentRepository {
     return !!order;
   }
   async save(payment: DomainPaymentEntity): Promise<DomainPaymentEntity> {
-    const dbEntity = await this.typeOrmRepository.save(
-      this.mapToDbEntity(payment),
-    );
+    const entity = await this.typeOrmRepository.findOne({
+      where: { id: payment.id.value },
+    });
 
-    return this.mapToDomainEntity(dbEntity);
+    if (!!entity) {
+      await this.typeOrmRepository.updateOne(
+        { id: payment.id.value },
+        { $set: { ...this.mapToDbEntity(payment) } },
+        { upsert: true },
+      );
+    } else {
+      await this.typeOrmRepository.insertOne(this.mapToDbEntity(payment));
+    }
+
+    return payment;
   }
 
   private mapToDomainEntity(

@@ -64,14 +64,14 @@ export class RefreshPaymentStatusUseCase implements UseCase<Input, Output> {
     );
 
     try {
-      const idPaid = await this.paymentGatewayService.isPixPaid(
+      const isPaid = await this.paymentGatewayService.isPixPaid(
         payment.externalPaymentId,
       );
 
-      if (idPaid) {
+      if (isPaid) {
+        await this.orderService.setAsPaid(order.id);
         payment.markAsPaid();
-        this.paymentRepository.save(payment);
-        this.orderService.setAsPaid(order.id);
+        await this.paymentRepository.save(payment);
       }
 
       return { status: payment.status };

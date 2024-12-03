@@ -82,5 +82,6 @@ export const getTypeOrmMongoRepositoryMock = <T>(): jest.Mocked<
   ({
     findOneBy: jest.fn(),
     findOne: jest.fn(),
-    save: jest.fn(),
+    updateOne: jest.fn(),
+    insertOne: jest.fn(),
   }) as unknown as jest.Mocked<MongoRepository<T>>;
