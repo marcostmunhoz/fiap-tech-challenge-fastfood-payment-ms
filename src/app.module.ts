@@ -5,6 +5,7 @@ import {
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { HealthModule } from './health/health.module';
+import { PaymentEntity } from './payment/infrastructure/entity/payment.entity';
 import * as migrations from './payment/infrastructure/migrations';
 import { PaymentModule } from './payment/payment.module';
 
@@ -24,12 +25,12 @@ import { PaymentModule } from './payment/payment.module';
       useFactory: (options: TypeOrmModuleOptions) => {
         return {
           ...options,
-          entities: [],
+          entities: [PaymentEntity],
         };
       },
       inject: [TypeOrmModuleOptionsToken],
     }),
-    TypeOrmModule.forFeature([]),
+    TypeOrmModule.forFeature([PaymentEntity]),
     HealthModule,
     PaymentModule,
   ],

@@ -79,27 +79,6 @@ describe('CreatePaymentUseCase', () => {
       expect(act).rejects.toThrow('Order not found with given ID.');
     });
 
-    it('should throw an error if order belongs to another user', async () => {
-      // Arrange
-      const order = getCompleteOrderData();
-      order.customerId = 'another-user-id';
-      const input: Input = {
-        orderId: order.id.value,
-        user: mockUser,
-        paymentMethod: PaymentMethodEnum.PIX,
-      };
-      paymentRepositoryMock.existsWithOrderIdAndNotFailed.mockResolvedValue(
-        false,
-      );
-      orderServiceMock.findById.mockResolvedValue(order);
-
-      // Act
-      const result = sut.execute(input);
-
-      // Assert
-      await expect(result).rejects.toThrow('Unauthorized resource.');
-    });
-
     it('should return a PixPaymentOutput if payment method is PIX', async () => {
       // Arrange
       const order = getCompleteOrderData();

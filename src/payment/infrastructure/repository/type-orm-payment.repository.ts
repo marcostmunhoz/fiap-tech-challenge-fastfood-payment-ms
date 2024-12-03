@@ -6,15 +6,21 @@ import {
   PaymentMethodEnum,
   PaymentStatusEnum,
 } from '@marcostmunhoz/fastfood-libs';
-import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource, MongoRepository } from 'typeorm';
 import { PaymentEntity as InfrastructurePaymentEntity } from '../entity/payment.entity';
 
 export class TypeOrmPaymentRepository implements PaymentRepository {
+  private readonly typeOrmRepository: MongoRepository<InfrastructurePaymentEntity>;
+
   constructor(
-    @InjectRepository(InfrastructurePaymentEntity)
-    private readonly typeOrmRepository: Repository<InfrastructurePaymentEntity>,
-  ) {}
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
+  ) {
+    this.typeOrmRepository = this.dataSource.getMongoRepository(
+      InfrastructurePaymentEntity,
+    );
+  }
 
   async findById(id: EntityIdValueObject): Promise<DomainPaymentEntity> {
     const dbEntity = await this.typeOrmRepository.findOneBy({ id: id.value });
@@ -41,12 +47,16 @@ export class TypeOrmPaymentRepository implements PaymentRepository {
   }
 
   async existsWithOrderIdAndNotFailed(orderId: string): Promise<boolean> {
-    return await this.typeOrmRepository.exists({
+    const order = await this.typeOrmRepository.findOne({
       where: {
         orderId,
-        status: In([PaymentStatusEnum.PENDING, PaymentStatusEnum.PAID]),
+        status: {
+          $in: [PaymentStatusEnum.PENDING, PaymentStatusEnum.PAID],
+        },
       },
     });
+
+    return !!order;
   }
   async save(payment: DomainPaymentEntity): Promise<DomainPaymentEntity> {
     const dbEntity = await this.typeOrmRepository.save(

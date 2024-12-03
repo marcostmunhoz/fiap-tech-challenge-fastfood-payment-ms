@@ -8,4 +8,13 @@ module.exports = {
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
   testMatch: ['<rootDir>/**/*.spec.ts'],
+  coveragePathIgnorePatterns: [
+    '<rootDir>/app.module.ts',
+    '<rootDir>/main.config.ts',
+    '<rootDir>/main.ts',
+    '<rootDir>/health',
+    '<rootDir>/payment/payment.module.ts',
+    '<rootDir>/payment/infrastructure/migrations',
+    '<rootDir>/payment/infrastructure/service/fake-payment-gateway.service.ts',
+  ],
 };

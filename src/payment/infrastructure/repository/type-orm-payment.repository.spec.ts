@@ -2,34 +2,37 @@ import { PaymentEntity as DomainPaymentEntity } from '@/payment/domain/entity/pa
 import {
   getDomainPaymentEntity,
   getInfrastructurePaymentEntity,
+  getTypeOrmMongoRepositoryMock,
 } from '@/payment/testing/helpers';
 import {
   EntityIdValueObject,
-  getTypeOrmRepositoryMock,
   getValidPaymentEntityId,
   PaymentStatusEnum,
 } from '@marcostmunhoz/fastfood-libs';
-import { In, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { PaymentEntity as InfrastructurePaymentEntity } from '../entity/payment.entity';
 import { TypeOrmPaymentRepository } from './type-orm-payment.repository';
 
 describe('TypeOrmPaymentRepository', () => {
+  let fakeDataSource: jest.Mocked<DataSource>;
   let repositoryMock: jest.Mocked<Repository<InfrastructurePaymentEntity>>;
   let sut: TypeOrmPaymentRepository;
 
   beforeEach(() => {
-    const mocks = getTypeOrmRepositoryMock<InfrastructurePaymentEntity>();
-    repositoryMock = mocks.repositoryMock as unknown as jest.Mocked<
-      Repository<InfrastructurePaymentEntity>
-    >;
-    sut = new TypeOrmPaymentRepository(repositoryMock);
+    repositoryMock =
+      getTypeOrmMongoRepositoryMock<InfrastructurePaymentEntity>() as unknown as jest.Mocked<
+        Repository<InfrastructurePaymentEntity>
+      >;
+    fakeDataSource = {
+      getMongoRepository: () => repositoryMock,
+    } as unknown as jest.Mocked<DataSource>;
+    sut = new TypeOrmPaymentRepository(fakeDataSource);
   });
 
   describe('findById', () => {
     it('should return false when a payment with the provided order ID does not exist', async () => {
       // Arrange
       const id = getValidPaymentEntityId();
-      repositoryMock.findOneBy.mockResolvedValue(null);
 
       // Act
       const result = await sut.findById(id);
@@ -71,17 +74,19 @@ describe('TypeOrmPaymentRepository', () => {
     it('should return true when a payment with the provided order ID exists and is not failed', async () => {
       // Arrange
       const dbEntity = getInfrastructurePaymentEntity();
-      repositoryMock.exists.mockResolvedValue(true);
+      repositoryMock.findOne.mockResolvedValue(dbEntity);
 
       // Act
       const result = await sut.existsWithOrderIdAndNotFailed(dbEntity.orderId);
 
       // Assert
-      expect(repositoryMock.exists).toHaveBeenCalledTimes(1);
-      expect(repositoryMock.exists).toHaveBeenCalledWith({
+      expect(repositoryMock.findOne).toHaveBeenCalledTimes(1);
+      expect(repositoryMock.findOne).toHaveBeenCalledWith({
         where: {
           orderId: dbEntity.orderId,
-          status: In([PaymentStatusEnum.PENDING, PaymentStatusEnum.PAID]),
+          status: {
+            $in: [PaymentStatusEnum.PENDING, PaymentStatusEnum.PAID],
+          },
         },
       });
       expect(result).toBe(true);

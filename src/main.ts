@@ -13,8 +13,8 @@ async function bootstrap() {
   applyGlobalAppConfig(app);
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Service Title')
-    .setDescription('Service Description')
+    .setTitle('Fastfood Totem API - Payment Service')
+    .setDescription('API to manage payments')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);

@@ -11,16 +11,22 @@ import {
   EntityAlreadyExistsException,
   EntityIdValueObject,
   EntityNotFoundException,
-  OrderData,
+  MoneyValueObject,
+  OrderStatusEnum,
   PaymentMethodEnum,
   PaymentStatusEnum,
-  UnauthorizedResourceException,
   UseCase,
   UserData,
 } from '@marcostmunhoz/fastfood-libs';
 import { Inject } from '@nestjs/common';
 import { OrderService } from '../service/order.service.interface';
 import { PaymentGatewayService } from '../service/payment-gateway.service.interface';
+
+type OrderData = {
+  id: EntityIdValueObject;
+  status: OrderStatusEnum;
+  total: MoneyValueObject;
+};
 
 export type CardPaymentInput = {
   orderId: string;
@@ -88,10 +94,6 @@ export class CreatePaymentUseCase implements UseCase<Input, Output> {
 
     if (!order) {
       throw new EntityNotFoundException('Order not found with given ID.');
-    }
-
-    if (order.customerId !== input.user.id) {
-      throw new UnauthorizedResourceException();
     }
 
     const payment = this.paymentFactory.createPayment({

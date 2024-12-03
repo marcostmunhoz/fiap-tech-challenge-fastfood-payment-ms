@@ -2,6 +2,7 @@ import {
   getCompletePaymentData,
   PaymentData,
 } from '@marcostmunhoz/fastfood-libs';
+import { MongoRepository } from 'typeorm';
 import { OrderService } from '../application/service/order.service.interface';
 import { PaymentGatewayService } from '../application/service/payment-gateway.service.interface';
 import {
@@ -74,3 +75,12 @@ export const getOrderServiceMock = (): jest.Mocked<OrderService> => ({
   setAsPaid: jest.fn(),
   setAsCanceled: jest.fn(),
 });
+
+export const getTypeOrmMongoRepositoryMock = <T>(): jest.Mocked<
+  MongoRepository<T>
+> =>
+  ({
+    findOneBy: jest.fn(),
+    findOne: jest.fn(),
+    save: jest.fn(),
+  }) as unknown as jest.Mocked<MongoRepository<T>>;
