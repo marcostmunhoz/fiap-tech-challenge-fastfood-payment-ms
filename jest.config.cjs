@@ -4,10 +4,10 @@ module.exports = {
   rootDir: 'src',
   moduleNameMapper: { '^@/(.*)$': '<rootDir>/$1' },
   transform: { '^.+\\.ts$': 'ts-jest' },
-  collectCoverageFrom: ['**/*.ts'],
-  coverageDirectory: '../coverage',
   testEnvironment: 'node',
   testMatch: ['<rootDir>/**/*.spec.ts'],
+  collectCoverageFrom: ['**/*.ts'],
+  coverageDirectory: '../coverage',
   coveragePathIgnorePatterns: [
     '<rootDir>/app.module.ts',
     '<rootDir>/main.config.ts',
@@ -17,4 +17,12 @@ module.exports = {
     '<rootDir>/payment/infrastructure/migrations',
     '<rootDir>/payment/infrastructure/service/fake-payment-gateway.service.ts',
   ],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+  },
 };
